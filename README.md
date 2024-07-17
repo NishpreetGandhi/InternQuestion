@@ -23,12 +23,12 @@ By appropriately disabling fields and buttons (e.g., the primary key field after
 
 Release History of Student Enrollment Form Code on GitHub (Version 1.0):
 
--> Initial release of the Student Enrollment Form.
--> Basic form layout with fields: Roll-No, Full-Name, Class, Birth-Date, Address, and Enrollment-Date.
--> Implementation of primary key validation for Roll-No.
--> Functionality for [Save], [Update], and [Reset] buttons.
--> Data validation to ensure no empty fields.
--> Basic styling and user interface enhancements for improved usability.
+1) Initial release of the Student Enrollment Form.
+2) Basic form layout with fields: Roll-No, Full-Name, Class, Birth-Date, Address, and Enrollment-Date.
+3) Implementation of primary key validation for Roll-No.
+4) Functionality for [Save], [Update], and [Reset] buttons.
+5) Data validation to ensure no empty fields.
+6) Basic styling and user interface enhancements for improved usability.
 
 
 Scope of Functionalities:
