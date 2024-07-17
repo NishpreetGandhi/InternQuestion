@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Enrollment Form</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Student Enrollment Form</h2>
+        <form id="studentForm">
+            <div class="form-group">
+                <label for="rollNo">Roll No</label>
+                <input type="text" class="form-control" id="rollNo" name="rollNo" required>
+            </div>
+            <div class="form-group">
+                <label for="fullName">Full Name</label>
+                <input type="text" class="form-control" id="fullName" name="fullName" required disabled>
+            </div>
+            <div class="form-group">
+                <label for="class">Class</label>
+                <input type="text" class="form-control" id="class" name="class" required disabled>
+            </div>
+            <div class="form-group">
+                <label for="birthDate">Birth Date</label>
+                <input type="date" class="form-control" id="birthDate" name="birthDate" required disabled>
+            </div>
+            <div class="form-group">
+                <label for="address">Address</label>
+                <input type="text" class="form-control" id="address" name="address" required disabled>
+            </div>
+            <div class="form-group">
+                <label for="enrollmentDate">Enrollment Date</label>
+                <input type="date" class="form-control" id="enrollmentDate" name="enrollmentDate" required disabled>
+            </div>
+            <button type="button" class="btn btn-primary" id="saveBtn" disabled>Save</button>
+            <button type="button" class="btn btn-secondary" id="updateBtn" disabled>Update</button>
+            <button type="button" class="btn btn-danger" id="resetBtn" disabled>Reset</button>
+        </form>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            resetForm();
+
+            $('#rollNo').on('input', function() {
+                const rollNo = $(this).val().trim();
+                console.log('Roll No input:', rollNo);                
+                if (rollNo) {
+                    const studentData = getStudentData(rollNo);
+                    if (studentData) {
+                        populateForm(studentData);
+                        enableFormFields();
+                        $('#saveBtn').prop('disabled', true);
+                        $('#updateBtn').prop('disabled', false);
+                        $('#resetBtn').prop('disabled', false);
+                    } else {
+                        enableFormFields();
+                        $('#saveBtn').prop('disabled', false);
+                        $('#updateBtn').prop('disabled', true);
+                        $('#resetBtn').prop('disabled', false);
+                    }
+                } else {
+                    resetForm();
+                }
+            });
+
+            $('#saveBtn').on('click', function() {
+                if (isFormValid()) {
+                    saveData();
+                    alert('Student data saved successfully!');
+                    resetForm();
+                } else {
+                    alert('Please fill in all fields.');
+                }
+            });
+
+            $('#updateBtn').on('click', function() {
+                if (isFormValid()) {
+                    saveData();
+                    alert('Student data updated successfully!');
+                    resetForm();
+                } else {
+                    alert('Please fill in all fields.');
+                }
+            });
+
+            $('#resetBtn').on('click', function() {
+                resetForm();
+            });
+        });
+
+        function resetForm() {
+            $('#studentForm')[0].reset();
+            $('#rollNo').prop('disabled', false).focus();
+            $('#fullName, #class, #birthDate, #address, #enrollmentDate').prop('disabled', true);
+            $('#saveBtn, #updateBtn, #resetBtn').prop('disabled', true);
+        }
+
+        function enableFormFields() {
+            $('#fullName, #class, #birthDate, #address, #enrollmentDate').prop('disabled', false);
+            $('#rollNo').prop('disabled', true);
+        }
+
+        function isFormValid() {
+            const formFields = $('#studentForm').serializeArray();
+            return formFields.every(field => field.value.trim() !== '');
+        }
+
+        function getFormData() {
+            const formData = {};
+            $('#studentForm').serializeArray().forEach(field => {
+                formData[field.name] = field.value.trim();
+            });
+            return JSON.stringify(formData);
+        }
+
+        function populateForm(studentData) {
+            $('#rollNo').val(studentData.rollNo).prop('disabled', true);
+            $('#fullName').val(studentData.fullName);
+            $('#class').val(studentData.class);
+            $('#birthDate').val(studentData.birthDate);
+            $('#address').val(studentData.address);
+            $('#enrollmentDate').val(studentData.enrollmentDate);
+        }
+
+        function getStudentData(rollNo) {
+            return JSON.parse(localStorage.getItem(rollNo));
+        }
+
+        function saveStudentData(studentData) {
+            localStorage.setItem(studentData.rollNo, JSON.stringify(studentData));
+        }
+
+        function executeCommandAtGivenBaseUrl(request, url) {
+            var jsonObj;
+            $.post(url, request, function(result) {
+                jsonObj = result;
+            }).fail(function(result) {
+                jsonObj = result;
+            });
+            return jsonObj;
+        }
+
+        function saveData() {
+            var jsonStrObj = getFormData();
+            if (jsonStrObj === '') {
+                return '';
+            }
+            var connToken = '90932209|-31949213748908305|90963578'; // replace with your actual connection token
+            var empDBName = 'SCHOOL-DB';
+            var empRelationName = 'STUDENT';
+            var putRequest = createPUTRequest(connToken, jsonStrObj, empDBName, empRelationName);
+            jQuery.ajaxSetup({ async: false });
+            
+            var url = 'http://api.login2explore.com:5577/api/iml'; 
+            var resJsonObj = executeCommandAtGivenBaseUrl(putRequest, url);
+            
+            jQuery.ajaxSetup({ async: true });
+            resetForm();
+            $('#rollNo').focus();
+        }
+
+        function createPUTRequest(connToken, jsonStrObj, dbName, relName) {
+            var putRequest = '{'
+                + '"token" : "' + connToken
+                + '","dbName": "' + dbName
+                + '", "cmd" : "PUT", '
+                + '"rel" : "' + relName + '",'
+                + '"jsonStr": '
+                + jsonStrObj
+                + '}';
+            return putRequest;
+        }
+    </script>
+</body>
+</html>
