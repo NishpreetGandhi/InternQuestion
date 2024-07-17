@@ -21,8 +21,7 @@ The form's design is intuitive, featuring clear input fields and control buttons
 By appropriately disabling fields and buttons (e.g., the primary key field after it is filled), the form      enhances data security and prevents unintended modifications to critical data.
 
 
-Release History of Student Enrollment Form Code on GitHub
-Version 1.0:
+Release History of Student Enrollment Form Code on GitHub (Version 1.0):
 
 Initial release of the Student Enrollment Form.
 Basic form layout with fields: Roll-No, Full-Name, Class, Birth-Date, Address, and Enrollment-Date.
@@ -34,8 +33,8 @@ Basic styling and user interface enhancements for improved usability.
 
 Scope of Functionalities:
 
-Add New Student Records
-Update Existing Student Records
-Reset Form Fields
-Clear all input fields.
-Error Handling and Messaging
+1) Add New Student Records
+2) Update Existing Student Records
+3) Reset Form Fields
+4) Clear all input fields.
+5) Error Handling and Messaging
